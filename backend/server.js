@@ -1,3 +1,4 @@
+
 const express = require("express");
 const pool = require("./db");
 const cors = require("cors");
@@ -162,3 +163,8 @@ app.delete("/employees/:id", async (req, res) => {
 app.listen(5000, () => {
     console.log("Server is running on port 5000");
 });
+
+
+// EXPORT APP FOR VERCEL
+module.exports = app;
+
