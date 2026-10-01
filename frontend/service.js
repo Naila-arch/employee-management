@@ -1,5 +1,5 @@
 
-const API_URL = "http://localhost:5000/employees";
+const API_URL = "https://employee-management-edj7.vercel.app/employees";
 
 export async function getEmployees() {
     try {
@@ -59,3 +59,4 @@ export async function updateEmployee(id, employee) {
 
     return await response.json();
 }
+
