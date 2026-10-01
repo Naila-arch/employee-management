@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -50,11 +51,9 @@ function EmployeeList({ data }) {
         String(item.name || "")
             .toLowerCase()
             .includes(search.toLowerCase()) ||
-
         String(item.email || "")
             .toLowerCase()
             .includes(search.toLowerCase()) ||
-
         String(item.id || "")
             .toLowerCase()
             .includes(search.toLowerCase())
@@ -63,8 +62,7 @@ function EmployeeList({ data }) {
     return (
         <div className="container mt-5">
 
-            {/* Header */}
-            <div className="d-flex justify-content-between align-items-center mb-4">
+            <div className="d-flex justify-content-between align-items-center mb-4 gap-3">
 
                 <div>
                     <h2 className="fw-bold mb-1">
@@ -88,21 +86,22 @@ function EmployeeList({ data }) {
 
             </div>
 
-            {/* Employee Count */}
             <div className="mb-3">
                 <span className="badge bg-primary">
                     Total Employees: {filteredEmployees.length}
                 </span>
             </div>
 
-            {/* Table */}
             <div className="card shadow-sm">
 
                 <div className="card-body p-0">
 
                     <div className="table-responsive">
 
-                        <table className="table table-hover align-middle mb-0">
+                        <table
+                            className="table table-bordered table-hover align-middle mb-0"
+                            style={{ minWidth: "1200px" }}
+                        >
 
                             <thead className="table-dark">
 
@@ -129,39 +128,41 @@ function EmployeeList({ data }) {
 
                                         <tr key={item.id}>
 
-                                            <td className="fw-semibold">
+                                            <td className="fw-semibold text-nowrap">
                                                 {item.id}
                                             </td>
 
-                                            <td>
+                                            <td className="text-nowrap">
                                                 {item.name}
                                             </td>
 
-                                            <td>
+                                            <td className="text-nowrap">
                                                 {item.email}
                                             </td>
 
-                                            <td>
+                                            <td className="text-nowrap">
                                                 {item.phone}
                                             </td>
 
-                                            <td>
+                                            <td className="text-nowrap">
                                                 {item.department}
                                             </td>
 
-                                            <td>
+                                            <td className="text-nowrap">
                                                 {item.position}
                                             </td>
 
-                                            <td>
+                                            <td className="text-nowrap">
                                                 Rs. {item.salary}
                                             </td>
 
-                                            <td>
-                                                {item.joiningDate}
+                                            <td className="text-nowrap">
+                                                {item.joiningDate
+                                                    ? new Date(item.joiningDate).toLocaleDateString()
+                                                    : ""}
                                             </td>
 
-                                            <td>
+                                            <td className="text-nowrap">
 
                                                 <span
                                                     className={
@@ -175,22 +176,18 @@ function EmployeeList({ data }) {
 
                                             </td>
 
-                                            <td>
+                                            <td className="text-nowrap">
 
                                                 <button
                                                     className="btn btn-primary btn-sm me-2"
-                                                    onClick={() =>
-                                                        handleEdit(item)
-                                                    }
+                                                    onClick={() => handleEdit(item)}
                                                 >
                                                     Edit
                                                 </button>
 
                                                 <button
                                                     className="btn btn-danger btn-sm"
-                                                    onClick={() =>
-                                                        handleDelete(item.id)
-                                                    }
+                                                    onClick={() => handleDelete(item.id)}
                                                 >
                                                     Delete
                                                 </button>
@@ -226,10 +223,9 @@ function EmployeeList({ data }) {
 
             </div>
 
-            {/* Edit Employee */}
             {editEmployee && (
 
-                <div className="card shadow-sm mt-4">
+                <div className="card shadow-sm mt-4 mb-5">
 
                     <div className="card-body">
 
@@ -242,169 +238,93 @@ function EmployeeList({ data }) {
                             <div className="row">
 
                                 <div className="col-md-6 mb-3">
-
-                                    <label className="form-label">
-                                        Name
-                                    </label>
+                                    <label className="form-label">Name</label>
 
                                     <input
                                         className="form-control"
                                         type="text"
                                         name="name"
-                                        value={editEmployee.name}
+                                        value={editEmployee.name || ""}
                                         onChange={handleInput}
                                     />
-
                                 </div>
 
                                 <div className="col-md-6 mb-3">
-
-                                    <label className="form-label">
-                                        Email
-                                    </label>
+                                    <label className="form-label">Email</label>
 
                                     <input
                                         className="form-control"
                                         type="email"
                                         name="email"
-                                        value={editEmployee.email}
+                                        value={editEmployee.email || ""}
                                         onChange={handleInput}
                                     />
-
                                 </div>
 
                                 <div className="col-md-6 mb-3">
-
-                                    <label className="form-label">
-                                        Phone
-                                    </label>
+                                    <label className="form-label">Phone</label>
 
                                     <input
                                         className="form-control"
                                         type="text"
                                         name="phone"
-                                        value={editEmployee.phone}
+                                        value={editEmployee.phone || ""}
                                         onChange={handleInput}
                                     />
-
                                 </div>
 
                                 <div className="col-md-6 mb-3">
-
-                                    <label className="form-label">
-                                        Department
-                                    </label>
+                                    <label className="form-label">Department</label>
 
                                     <input
                                         className="form-control"
                                         type="text"
                                         name="department"
-                                        value={editEmployee.department}
+                                        value={editEmployee.department || ""}
                                         onChange={handleInput}
                                     />
-
                                 </div>
 
                                 <div className="col-md-6 mb-3">
-
-                                    <label className="form-label">
-                                        Position
-                                    </label>
+                                    <label className="form-label">Position</label>
 
                                     <input
                                         className="form-control"
                                         type="text"
                                         name="position"
-                                        value={editEmployee.position}
+                                        value={editEmployee.position || ""}
                                         onChange={handleInput}
                                     />
-
                                 </div>
 
                                 <div className="col-md-6 mb-3">
-
-                                    <label className="form-label">
-                                        Salary
-                                    </label>
+                                    <label className="form-label">Salary</label>
 
                                     <input
                                         className="form-control"
                                         type="number"
                                         name="salary"
-                                        value={editEmployee.salary}
+                                        value={editEmployee.salary || ""}
                                         onChange={handleInput}
                                     />
-
                                 </div>
 
                                 <div className="col-md-6 mb-3">
-
-                                    <label className="form-label">
-                                        Joining Date
-                                    </label>
+                                    <label className="form-label">Joining Date</label>
 
                                     <input
                                         className="form-control"
-                                        type="text"
+                                        type="date"
                                         name="joiningDate"
-                                        value={editEmployee.joiningDate}
+                                        value={
+                                            editEmployee.joiningDate
+                                                ? editEmployee.joiningDate.split("T")[0]
+                                                : ""
+                                        }
                                         onChange={handleInput}
                                     />
-
                                 </div>
 
                                 <div className="col-md-6 mb-3">
+                                    <label
 
-                                    <label className="form-label">
-                                        Status
-                                    </label>
-
-                                    <select
-                                        className="form-select"
-                                        name="status"
-                                        value={editEmployee.status}
-                                        onChange={handleInput}
-                                    >
-
-                                        <option value="Active">
-                                            Active
-                                        </option>
-
-                                        <option value="Not Active">
-                                            Not Active
-                                        </option>
-
-                                    </select>
-
-                                </div>
-
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="btn btn-success me-2"
-                            >
-                                Update Employee
-                            </button>
-
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                onClick={() => setEditEmployee(null)}
-                            >
-                                Cancel
-                            </button>
-
-                        </form>
-
-                    </div>
-
-                </div>
-
-            )}
-
-        </div>
-    );
-}
-
-export default EmployeeList;
