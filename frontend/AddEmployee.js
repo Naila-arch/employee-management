@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { addEmployee } from "./service";
 
-function AddEmployee({ setdata }) {
+function AddEmployee({ onEmployeeAdded }) {
     const emptyEmployee = {
         id: "",
         name: "",
@@ -30,13 +30,15 @@ function AddEmployee({ setdata }) {
         e.preventDefault();
 
         try {
-            const newEmployee = await addEmployee(value);
-
-            setdata((prev) => [...prev, newEmployee]);
+            await addEmployee(value);
 
             alert("Employee added successfully!");
 
             setvalue(emptyEmployee);
+
+            if (onEmployeeAdded) {
+                await onEmployeeAdded();
+            }
 
         } catch (error) {
             console.log(error);
@@ -237,3 +239,4 @@ function AddEmployee({ setdata }) {
 }
 
 export default AddEmployee;
+

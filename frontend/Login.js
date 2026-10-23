@@ -1,8 +1,9 @@
+
 "use client";
 
 import { useState } from "react";
 
-function Login({ setLoggedIn }) {
+function Login({ onLogin }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -15,7 +16,7 @@ function Login({ setLoggedIn }) {
         ) {
             localStorage.setItem("isLoggedIn", "true");
 
-            setLoggedIn(true);
+            onLogin();
         } else {
             alert("Invalid email or password.");
         }
@@ -97,3 +98,4 @@ function Login({ setLoggedIn }) {
 }
 
 export default Login;
+

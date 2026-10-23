@@ -1,14 +1,15 @@
+
 "use client";
 
-import { useState, useEffect } from "react";
-import { getEmployees } from "../service";
+import { useEffect, useState } from "react";
+import Login from "../Login";
 import AddEmployee from "../AddEmployee";
 import EmployeeList from "./EmployeeList";
-import Login from "../Login";
+import { getEmployees } from "../service";
 
 export default function Home() {
-    const [data, setdata] = useState<any[]>([]);
     const [loggedIn, setLoggedIn] = useState(false);
+    const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -16,62 +17,65 @@ export default function Home() {
 
         if (loginStatus === "true") {
             setLoggedIn(true);
+            loadEmployees();
+        } else {
+            setLoading(false);
         }
-
-        setLoading(false);
     }, []);
 
-    useEffect(() => {
-        if (loggedIn) {
-            getEmployees().then((employees) => {
-                setdata(employees);
-            });
+    async function loadEmployees() {
+        try {
+            const employees = await getEmployees();
+            setData(employees);
+        } catch (error) {
+            console.log("Employee loading error:", error);
+        } finally {
+            setLoading(false);
         }
-    }, [loggedIn]);
+    }
+
+    function handleLogin() {
+        localStorage.setItem("isLoggedIn", "true");
+        setLoggedIn(true);
+        loadEmployees();
+    }
 
     function handleLogout() {
         localStorage.removeItem("isLoggedIn");
         setLoggedIn(false);
+        setData([]);
     }
 
     if (loading) {
         return (
-            <p className="text-center mt-5">
-                Loading...
-            </p>
+            <div className="container mt-5 text-center">
+                <h3>Loading...</h3>
+            </div>
         );
     }
 
     if (!loggedIn) {
-        return <Login setLoggedIn={setLoggedIn} />;
+        return <Login onLogin={handleLogin} />;
     }
 
     return (
-        <>
-            <nav className="navbar navbar-dark bg-dark">
-                <div className="container">
+        <div>
+            <nav className="navbar navbar-dark bg-dark px-4">
+                <span className="navbar-brand">
+                    Employee Management System
+                </span>
 
-                    <span className="navbar-brand">
-                        Employee Management System
-                    </span>
-
-                    <button
-                        className="btn btn-danger"
-                        onClick={handleLogout}
-                    >
-                        Logout
-                    </button>
-
-                </div>
+                <button
+                    className="btn btn-danger"
+                    onClick={handleLogout}
+                >
+                    Logout
+                </button>
             </nav>
 
-            <div className="container mt-4">
+            <AddEmployee onEmployeeAdded={loadEmployees} />
 
-                <AddEmployee setdata={setdata} />
-
-                <EmployeeList data={data} />
-
-            </div>
-        </>
+            <EmployeeList data={data} />
+        </div>
     );
 }

@@ -18,7 +18,7 @@ app.get("/employees", async (req, res) => {
 
         res.json(result.rows);
     } catch (error) {
-        console.log(error);
+        console.log("GET ERROR:", error);
 
         res.status(500).json({
             error: error.message
@@ -43,7 +43,7 @@ app.post("/employees", async (req, res) => {
         } = req.body;
 
         const result = await pool.query(
-            `INSERT INTO employees
+            `INSERT INTO public."employees"
             (id, name, email, phone, department, position, salary, "joiningDate", status)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING *`,
@@ -63,7 +63,7 @@ app.post("/employees", async (req, res) => {
         res.json(result.rows[0]);
 
     } catch (error) {
-        console.log(error);
+        console.log("POST ERROR:", error);
 
         res.status(500).json({
             error: error.message
@@ -89,7 +89,7 @@ app.put("/employees/:id", async (req, res) => {
         } = req.body;
 
         const result = await pool.query(
-            `UPDATE employees
+            `UPDATE public."employees"
              SET name = $1,
                  email = $2,
                  phone = $3,
@@ -122,7 +122,7 @@ app.put("/employees/:id", async (req, res) => {
         res.json(result.rows[0]);
 
     } catch (error) {
-        console.log(error);
+        console.log("PUT ERROR:", error);
 
         res.status(500).json({
             error: error.message
@@ -137,7 +137,7 @@ app.delete("/employees/:id", async (req, res) => {
         const { id } = req.params;
 
         const result = await pool.query(
-            "DELETE FROM employees WHERE id = $1 RETURNING *",
+            'DELETE FROM public."employees" WHERE id = $1 RETURNING *',
             [id]
         );
 
@@ -150,7 +150,7 @@ app.delete("/employees/:id", async (req, res) => {
         res.json(result.rows[0]);
 
     } catch (error) {
-        console.log(error);
+        console.log("DELETE ERROR:", error);
 
         res.status(500).json({
             error: error.message
