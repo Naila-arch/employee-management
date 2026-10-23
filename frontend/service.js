@@ -1,66 +1,71 @@
 
+import supabase from "./app/supabaseClient";
+
 const API_URL =
     "https://hibfuzgmzugjjsmnapzo.supabase.co/functions/v1/employees";
 
+// Har request ke liye login session aur access token lena
+async function requestAPI(url, options = {}) {
+    const {
+        data: { session },
+        error: sessionError,
+    } = await supabase.auth.getSession();
+
+    if (sessionError || !session) {
+        throw new Error("Please log in again.");
+    }
+
+    const response = await fetch(url, {
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${session.access_token}`,
+            "apikey": "sb_publishable_e6NvebB4l0o4vUx74j-5dA_Gt2odITD",
+            ...options.headers,
+        },
+    });
+
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok) {
+        throw new Error(
+            data?.error || `Request failed: ${response.status}`
+        );
+    }
+
+    return data;
+}
+
 // Employees ki list lena
 export async function getEmployees() {
-    try {
-        const response = await fetch(API_URL);
-
-        if (!response.ok) {
-            throw new Error("Failed to fetch employees");
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error("GET employees error:", error);
-        throw error;
-    }
+    return requestAPI(API_URL, {
+        method: "GET",
+    });
 }
 
 // Naya employee add karna
 export async function addEmployee(employee) {
-    const response = await fetch(API_URL, {
+    return requestAPI(API_URL, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(employee)
+        body: JSON.stringify(employee),
     });
-
-    if (!response.ok) {
-        throw new Error("Add employee API is not enabled yet.");
-    }
-
-    return await response.json();
 }
 
 // Employee delete karna
 export async function deleteEmployee(id) {
-    const response = await fetch(`${API_URL}/${encodeURIComponent(id)}`, {
-        method: "DELETE"
-    });
-
-    if (!response.ok) {
-        throw new Error("Delete employee API is not enabled yet.");
-    }
-
-    return await response.json();
+    return requestAPI(
+        `${API_URL}/${encodeURIComponent(id)}`,
+        { method: "DELETE" }
+    );
 }
 
 // Employee update karna
 export async function updateEmployee(id, employee) {
-    const response = await fetch(`${API_URL}/${encodeURIComponent(id)}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(employee)
-    });
-
-    if (!response.ok) {
-        throw new Error("Update employee API is not enabled yet.");
-    }
-
-    return await response.json();
+    return requestAPI(
+        `${API_URL}/${encodeURIComponent(id)}`,
+        {
+            method: "PUT",
+            body: JSON.stringify(employee),
+        }
+    );
 }
