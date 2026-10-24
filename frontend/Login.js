@@ -2,48 +2,67 @@
 "use client";
 
 import { useState } from "react";
+import supabase from "./app/supabaseClient";
 
 function Login({ onLogin }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    function handleLogin(e) {
+    async function handleLogin(e) {
         e.preventDefault();
+        setLoading(true);
 
-        if (
-            email === "admin@gmail.com" &&
-            password === "admin123"
-        ) {
+        try {
+            const { data, error } =
+                await supabase.auth.signInWithPassword({
+                    email: email.trim(),
+                    password: password,
+                });
+
+            if (error) {
+                alert("Login failed: " + error.message);
+                return;
+            }
+
+            if (!data.session?.access_token) {
+                alert("Login session nahi mila. Dobara login karo.");
+                return;
+            }
+
             localStorage.setItem("isLoggedIn", "true");
 
-            onLogin();
-        } else {
-            alert("Invalid email or password.");
+            if (typeof onLogin === "function") {
+                await onLogin();
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+
+            alert(
+                error instanceof Error
+                    ? error.message
+                    : "Something went wrong. Please try again."
+            );
+        } finally {
+            setLoading(false);
         }
     }
 
     return (
         <div className="container mt-5">
-
             <div
                 className="card shadow mx-auto"
                 style={{ maxWidth: "450px" }}
             >
-
                 <div className="card-body p-4">
-
                     <h2 className="text-center mb-4">
                         Employee Management System
                     </h2>
 
-                    <h4 className="text-center mb-4">
-                        Login
-                    </h4>
+                    <h4 className="text-center mb-4">Login</h4>
 
                     <form onSubmit={handleLogin}>
-
                         <div className="mb-3">
-
                             <label className="form-label">
                                 Email
                             </label>
@@ -58,11 +77,9 @@ function Login({ onLogin }) {
                                 }
                                 required
                             />
-
                         </div>
 
                         <div className="mb-3">
-
                             <label className="form-label">
                                 Password
                             </label>
@@ -77,25 +94,22 @@ function Login({ onLogin }) {
                                 }
                                 required
                             />
-
                         </div>
 
                         <button
                             type="submit"
                             className="btn btn-primary w-100"
+                            disabled={loading}
                         >
-                            Login
+                            {loading
+                                ? "Logging in..."
+                                : "Login"}
                         </button>
-
                     </form>
-
                 </div>
-
             </div>
-
         </div>
     );
 }
 
 export default Login;
-
