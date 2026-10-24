@@ -26,7 +26,7 @@ function Login({ onLogin }) {
             }
 
             if (!data.session?.access_token) {
-                alert("Login session nahi mila. Dobara login karo.");
+                alert("Login session nahi mili. Dobara login karo.");
                 return;
             }
 
@@ -35,13 +35,13 @@ function Login({ onLogin }) {
             if (typeof onLogin === "function") {
                 await onLogin();
             }
-        } catch (error) {
-            console.error("Login error:", error);
+        } catch (err) {
+            console.error("Login error:", err);
 
             alert(
-                error instanceof Error
-                    ? error.message
-                    : "Something went wrong. Please try again."
+                err instanceof Error
+                    ? err.message
+                    : "Login nahi ho saka. Dobara try karo."
             );
         } finally {
             setLoading(false);
@@ -101,9 +101,7 @@ function Login({ onLogin }) {
                             className="btn btn-primary w-100"
                             disabled={loading}
                         >
-                            {loading
-                                ? "Logging in..."
-                                : "Login"}
+                            {loading ? "Logging in..." : "Login"}
                         </button>
                     </form>
                 </div>
