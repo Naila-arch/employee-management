@@ -10,16 +10,20 @@ async function requestAPI(url, options = {}) {
         error: sessionError,
     } = await supabase.auth.getSession();
 
-    if (sessionError || !session) {
-        throw new Error("Please log in again.");
+    if (sessionError) {
+        throw new Error("Could not check login session. Please log in again.");
+    }
+
+    if (!session?.access_token) {
+        throw new Error("Login session nahi mili. Please log in again.");
     }
 
     const response = await fetch(url, {
         ...options,
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${session.access_token}`,
             "apikey": "sb_publishable_e6NvebB4l0o4vUx74j-5dA_Gt2odITD",
+            "Authorization": `Bearer ${session.access_token}`,
             ...options.headers,
         },
     });
